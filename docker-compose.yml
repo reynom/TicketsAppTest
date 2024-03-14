@@ -1,0 +1,21 @@
+version: "2"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  ticketsapptest:
+    build: .
+    networks:
+      - proxy
+    restart: always
+    env_file:
+      - stack.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ticketsapptest.rule=Host(`ticketsapptest.muldoon.eu`)"
+      - "traefik.http.routers.ticketsapptest.entrypoints=websecure"
+      - "traefik.http.routers.ticketsapptest.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ticketsapptest.loadbalancer.server.port=3000" # facultative (traefik will use the first exposed port by default)
+      - "traefik.http.routers.ticketsapptest.tls=true"
